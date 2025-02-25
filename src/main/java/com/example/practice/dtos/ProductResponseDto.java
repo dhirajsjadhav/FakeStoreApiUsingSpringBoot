@@ -13,10 +13,10 @@ so that the outiside world can't get the real implemenation
 @Setter
 public class ProductResponseDto {
     private long id;
-    private String name;
+    private String title;
     private double price;
     private String description;
-    private String imageUrl;
+    private String image;
     //in Product Model we used Category Class Object
     //but in this dto we do not want to expose internal details of how this model is created
     //so instead of Category, String is used
@@ -25,10 +25,10 @@ public class ProductResponseDto {
     public static ProductResponseDto from(Product product) {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         productResponseDto.setId(product.getId());
-        productResponseDto.setName(product.getName());
+        productResponseDto.setTitle(product.getName());
         productResponseDto.setPrice(product.getPrice());
         productResponseDto.setDescription(product.getDescription());
-        productResponseDto.setImageUrl(product.getImageUrl());
+        productResponseDto.setImage(product.getImageUrl());
         productResponseDto.setCategory(product.getCategory().getName());
         return productResponseDto;
     }
