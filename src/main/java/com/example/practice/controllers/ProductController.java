@@ -3,7 +3,9 @@ package com.example.practice.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.practice.dtos.CreateProductRequestDto;
+import com.example.practice.dtos.ErrorDto;
 import com.example.practice.dtos.ProductResponseDto;
+import com.example.practice.exceptions.ProductNotFoundException;
 import com.example.practice.models.Product;
 import com.example.practice.services.ProductService;
 
@@ -12,11 +14,11 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
-
 
 @RestController
 public class ProductController {
@@ -29,7 +31,7 @@ public class ProductController {
     // @RequestMapping(value="/products/{id}", method=RequestMethod.GET) this
     // annotation is deprecated now instead use below
     @GetMapping(path = "/products/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable long id) { // @PathVariable maps whatever
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable long id) throws ProductNotFoundException { // @PathVariable maps whatever
                                                                                       // written in {} in @GetMapping
                                                                                       // annotation
         Product p = productService.getProductById(id);
@@ -52,22 +54,31 @@ public class ProductController {
     public List<ProductResponseDto> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponseDto> productResponseDtos = new ArrayList<>();
-        if (products != null) {
-            for (Product p : products) {
-                productResponseDtos.add(ProductResponseDto.from(p));
-            }
+        for (Product p : products) {
+            productResponseDtos.add(ProductResponseDto.from(p));
         }
+
         return productResponseDtos;
     }
+
     @PostMapping("/products")
-    public ProductResponseDto createProduct(@RequestBody CreateProductRequestDto createProductRequestDto){
-        Product product = productService.createProduct(createProductRequestDto.getTitle(),
-                                                    createProductRequestDto.getPrice(), 
-                                                    createProductRequestDto.getCategory(),
-                                                    createProductRequestDto.getDescription(), 
-                                                    createProductRequestDto.getImage());
-        
-        return product!=null?ProductResponseDto.from(product):null;
+    public ProductResponseDto createProduct(@RequestBody CreateProductRequestDto createProductRequestDto) {
+        Product product = productService.createProduct(
+                createProductRequestDto.getTitle(),
+                createProductRequestDto.getPrice(),
+                createProductRequestDto.getCategory(),
+                createProductRequestDto.getDescription(),
+                createProductRequestDto.getImage());
+
+        return ProductResponseDto.from(product);
     }
+
+    // @ExceptionHandler(NullPointerException.class)
+    // public ErrorDto handleNullPointerException() {
+    //     ErrorDto errorDto = new ErrorDto();
+    //     errorDto.setMessage("Null Pointer Exception Occured");
+    //     errorDto.setStatus("Failure");
+    //     return errorDto;
+    // }
 
 }
