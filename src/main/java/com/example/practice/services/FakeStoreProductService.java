@@ -1,13 +1,19 @@
 package com.example.practice.services;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.practice.dtos.FakeStoreProductDto;
 import com.example.practice.dtos.FakeStoreProductRequestDto;
+import com.example.practice.dtos.ProductResponseDto;
 import com.example.practice.exceptions.ProductNotFoundException;
 import com.example.practice.models.Product;
 
@@ -65,6 +71,53 @@ public class FakeStoreProductService implements ProductService {
                 fakeStoreProductRequestDto,
                 FakeStoreProductDto.class);
         return fakeStoreProductDto.toProduct();
+    }
+
+    @Override
+    public String updateProduct(long id, String title, Double price, String category, String description, String image)
+            throws ProductNotFoundException {
+        String body = "{";
+        if (title != null) {
+            body += "\"title\":\"" + title + "\"";
+        }
+        if (price != null) {
+            if (title != null) {
+                body += ",";
+            }
+            body += "\"price\":" + price;
+        }
+        if (category != null) {
+            if (title != null || price != null) {
+                body += ",";
+            }
+            body += "\"category\":\"" + category + "\"";
+        }
+        if (description != null) {
+            if (title != null || price != null || category != null) {
+                body += ",";
+            }
+            body += "\"description\":\"" + description + "\"";
+        }
+        if (image != null) {
+            if (title != null || price != null || category != null || description != null) {
+                body += ",";
+            }
+            body += "\"image\":\"" + image + "\"";
+        }
+        body += "}";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<String>(body, headers);
+        ResponseEntity<String> response = restTemplate.exchange("https://fakestoreapi.in/api/products/"+id, HttpMethod.PUT,requestEntity,String.class);
+        return response.getBody();
+    }
+
+    @Override
+    public String deleteProduct(long productId) {
+        ResponseEntity<String> response = restTemplate.exchange("https://fakestoreapi.com/products/" + productId,
+                HttpMethod.DELETE, null, String.class);
+        System.out.println(response.getBody());
+        return response.getBody();
     }
 
 }
