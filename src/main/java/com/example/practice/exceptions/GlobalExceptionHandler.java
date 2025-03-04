@@ -1,5 +1,8 @@
 package com.example.practice.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,10 +18,10 @@ public class GlobalExceptionHandler {
         return errorDto;
     }
     @ExceptionHandler(ProductNotFoundException.class)
-    public ErrorDto handleProductNotFoundException(ProductNotFoundException e) {
+    public ResponseEntity<ErrorDto> handleProductNotFoundException(ProductNotFoundException e) {
         ErrorDto errorDto = new ErrorDto();
         errorDto.setMessage(e.getMessage());
         errorDto.setStatus("Failure");
-        return errorDto;
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 }
