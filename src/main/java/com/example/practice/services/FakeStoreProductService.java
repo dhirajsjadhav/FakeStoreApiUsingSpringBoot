@@ -13,11 +13,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.example.practice.dtos.FakeStoreProductDto;
 import com.example.practice.dtos.FakeStoreProductRequestDto;
-import com.example.practice.dtos.ProductResponseDto;
 import com.example.practice.exceptions.ProductNotFoundException;
 import com.example.practice.models.Product;
 
-@Service
+@Service("fakeStoreProductService")
 public class FakeStoreProductService implements ProductService {
 
     RestTemplate restTemplate;

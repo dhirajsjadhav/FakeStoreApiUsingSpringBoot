@@ -12,6 +12,7 @@ import com.example.practice.services.ProductService;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ProductController {
     ProductService productService;
 
-    ProductController(ProductService productService) {
+    ProductController(@Qualifier("productDbService") ProductService productService) {
+        // @Qualifier is used to specify which implementation of ProductService to use.
+        // If there are multiple implementations of ProductService interface, then the one with @Qualifier annotation will be used for autowiring.
+        // condition is that each @Service annotation should have a unique name.
         this.productService = productService;
     }
 
