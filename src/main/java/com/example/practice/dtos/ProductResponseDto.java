@@ -22,6 +22,7 @@ public class ProductResponseDto {
     //so instead of Category, String is used
     private String category;
 
+
     public static ProductResponseDto from(Product product) {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         productResponseDto.setId(product.getId());
